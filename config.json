@@ -1,0 +1,6 @@
+{
+    "docx": {
+        "baseline": "data/docx/baseline",
+        "subject": "data/docx/subject"
+    }
+}
