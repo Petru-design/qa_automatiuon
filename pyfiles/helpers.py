@@ -1,4 +1,5 @@
-from compare import StructuralSimilarity, TextSimilarly
+from image_similarity import StructuralSimilarity
+from text_similarity import TextSimilarly
 
 
 def main():
