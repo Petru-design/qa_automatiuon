@@ -1,14 +1,5 @@
 {
-    "docx": {
-        "baseline": "data/docx/baseline",
-        "subject": "data/docx/subject"
-    },
-    "jpg":{
-        "baseline": "data/jpg/baseline",
-        "subject": "data/jpg/subject"
-    },
-    "png":{
-        "baseline": "data/png/baseline",
-        "subject": "data/png/subject"
-    }
+    "docx": "data/docx",
+    "jpg":"data/jpg",
+    "png": "data/png"
 }

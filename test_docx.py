@@ -1,3 +1,5 @@
+import os
+
 import docx
 import pytest
 
@@ -114,13 +116,13 @@ def recursive_compare(entity_1, entity_2, template: dict[str, None | dict | type
 
 
 @pytest.mark.parametrize(
-    "baseline_path, subject_path",
+    "test_path",
     paths_keeper.get_paths("docx"),
     ids=paths_keeper.get_ids("docx"),
 )
-def test_text(baseline_path, subject_path):
-    baseline = docx.Document(baseline_path)
-    subject = docx.Document(subject_path)
+def test_text(test_path):
+    baseline = docx.Document(os.path.join(test_path, "baseline.docx"))
+    subject = docx.Document(os.path.join(test_path, "subject.docx"))
 
     compare = TextSimilarly(
         "\n".join(paragraph.text for paragraph in baseline.paragraphs),
@@ -131,13 +133,13 @@ def test_text(baseline_path, subject_path):
 
 
 @pytest.mark.parametrize(
-    "baseline_path, subject_path",
+    "test_path",
     paths_keeper.get_paths("docx"),
     ids=paths_keeper.get_ids("docx"),
 )
-def test_format(baseline_path, subject_path):
-    baseline = docx.Document(baseline_path)
-    subject = docx.Document(subject_path)
+def test_format(test_path):
+    baseline = docx.Document(os.path.join(test_path, "baseline.docx"))
+    subject = docx.Document(os.path.join(test_path, "subject.docx"))
 
     for baseline_paragraph, subject_paragraph in zip(
         baseline.paragraphs, subject.paragraphs

@@ -7,11 +7,14 @@ from pyfiles.image_similarity import StructuralSimilarity
 
 
 @pytest.mark.parametrize(
-    "baseline_path, subject_path",
+    "test_path",
     paths_keeper.get_paths("jpg"),
     ids=paths_keeper.get_ids("jpg"),
 )
-def test_jpg(baseline_path, subject_path):
+def test_jpg(test_path):
+    baseline_path = os.path.join(test_path, "baseline")
+    subject_path = os.path.join(test_path, "subject")
+
     for baseline_image_path, subject_image_path in zip(
         os.listdir(baseline_path), os.listdir(subject_path)
     ):
@@ -23,11 +26,14 @@ def test_jpg(baseline_path, subject_path):
 
 
 @pytest.mark.parametrize(
-    "baseline_path, subject_path",
+    "test_path",
     paths_keeper.get_paths("png"),
     ids=paths_keeper.get_ids("png"),
 )
-def test_png(baseline_path, subject_path):
+def test_png(test_path):
+    baseline_path = os.path.join(test_path, "baseline")
+    subject_path = os.path.join(test_path, "subject")
+
     for baseline_image_path, subject_image_path in zip(
         os.listdir(baseline_path), os.listdir(subject_path)
     ):

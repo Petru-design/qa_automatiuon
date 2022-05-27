@@ -2,30 +2,29 @@ import os
 import shutil
 
 
-def safe_copy(file_path: str, full_target_path: str, file_name: str):
-    if not os.path.exists(full_target_path):
-        os.makedirs(full_target_path)
-    shutil.copy(file_path, os.path.join(full_target_path, file_name))
+def safe_copy(src_path: str, dst_folder_path: str, file_name: str):
+    if not os.path.exists(dst_folder_path):
+        os.makedirs(dst_folder_path)
+    shutil.copy(src_path, os.path.join(dst_folder_path, file_name))
 
 
 def copy_file(file_name: str, folder_path: str, target: str):
-    file_ext = file_name.split(".")[-1]
-    file_path = os.path.join(folder_path, file_name)
+    file_name_raw, file_ext = file_name.split(".")
+    src_path = os.path.join(folder_path, file_name)
+    dst_path = os.path.join(target, file_ext, file_name_raw)
 
-    safe_copy(file_path, os.path.join(target, file_ext, "baseline"), file_name)
-    safe_copy(file_path, os.path.join(target, file_ext, "subject"), file_name)
+    safe_copy(src_path, dst_path, f"baseline.{file_ext}")
+    safe_copy(src_path, dst_path, f"subject.{file_ext}")
 
 
 def copy_image(test_name: str, file_name: str, folder_path: str, target: str):
     file_ext = file_name.split(".")[-1]
-    file_path = os.path.join(folder_path, file_name)
+    src_path = os.path.join(folder_path, file_name)
+    basline_dst_path = os.path.join(target, file_ext, test_name, "baseline")
+    subject_dst_path = os.path.join(target, file_ext, test_name, "subject")
 
-    safe_copy(
-        file_path, os.path.join(target, file_ext, "baseline", test_name), file_name
-    )
-    safe_copy(
-        file_path, os.path.join(target, file_ext, "subject", test_name), file_name
-    )
+    safe_copy(src_path, basline_dst_path, file_name)
+    safe_copy(src_path, subject_dst_path, file_name)
 
 
 def move_files(tests: list[str], source: str, target: str):
