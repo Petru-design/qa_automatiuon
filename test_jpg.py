@@ -1,7 +1,7 @@
 import pytest
 
 from navigation import paths_keeper
-from pyfiles.compare import StructuralSimilarity
+from pyfiles.image_similarity import StructuralSimilarity
 
 @pytest.mark.parametrize(
     "baseline_path, subject_path",
