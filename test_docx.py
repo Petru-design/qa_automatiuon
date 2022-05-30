@@ -5,6 +5,7 @@ import pytest
 
 from navigation import paths_keeper
 from pyfiles.text_similarity import TextSimilarly
+from utils.comparators import recursive_attribute_compare
 
 
 font_comparable_fields = {
@@ -103,16 +104,6 @@ run_comparable_fields = {
     },
     "underline": type(None),
 }
-
-
-def recursive_attribute_compare(entity_1, entity_2, template: dict[str, None | dict | type]):
-    for field_name, field_type in template.items():
-        val_1 = getattr(entity_1, field_name)
-        val_2 = getattr(entity_2, field_name)
-        if isinstance(field_type, dict):
-            recursive_attribute_compare(val_1, val_2, field_type)
-        else:
-            assert val_1 == val_2
 
 
 @pytest.mark.parametrize(
