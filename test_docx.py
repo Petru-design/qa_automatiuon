@@ -105,12 +105,12 @@ run_comparable_fields = {
 }
 
 
-def recursive_compare(entity_1, entity_2, template: dict[str, None | dict | type]):
+def recursive_attribute_compare(entity_1, entity_2, template: dict[str, None | dict | type]):
     for field_name, field_type in template.items():
         val_1 = getattr(entity_1, field_name)
         val_2 = getattr(entity_2, field_name)
         if isinstance(field_type, dict):
-            recursive_compare(val_1, val_2, field_type)
+            recursive_attribute_compare(val_1, val_2, field_type)
         else:
             assert val_1 == val_2
 
@@ -144,10 +144,10 @@ def test_format(test_path):
     for baseline_paragraph, subject_paragraph in zip(
         baseline.paragraphs, subject.paragraphs
     ):
-        recursive_compare(
+        recursive_attribute_compare(
             baseline_paragraph, subject_paragraph, paragraph_comparable_fields
         )
         for baseline_run, subject_run in zip(
             baseline_paragraph.runs, subject_paragraph.runs
         ):
-            recursive_compare(baseline_run, subject_run, run_comparable_fields)
+            recursive_attribute_compare(baseline_run, subject_run, run_comparable_fields)
