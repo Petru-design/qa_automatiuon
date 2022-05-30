@@ -1,5 +1,6 @@
 {
     "docx": "data/docx",
     "jpg":"data/jpg",
-    "png": "data/png"
+    "png": "data/png",
+    "pdf": "data/pdf"
 }
