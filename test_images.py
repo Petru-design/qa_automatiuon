@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from navigation import paths_keeper
+from utils.navigation import paths_keeper
 from pyfiles.image_similarity import StructuralSimilarity
 
 

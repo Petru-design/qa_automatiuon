@@ -3,7 +3,7 @@ import os
 import docx
 import pytest
 
-from navigation import paths_keeper
+from utils.navigation import paths_keeper
 from pyfiles.text_similarity import TextSimilarly
 from utils.comparators import recursive_attribute_compare
 
