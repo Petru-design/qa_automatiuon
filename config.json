@@ -1,6 +1,8 @@
 {
-    "docx": {
-        "baseline": "data/docx/baseline",
-        "subject": "data/docx/subject"
-    }
+    "docx": "data/docx",
+    "jpg":"data/jpg",
+    "pdf": "data/pdf",
+    "png": "data/png",
+    "pptx": "data/pptx",
+    "xlsx": "data/xlsx"
 }
