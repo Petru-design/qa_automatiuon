@@ -34,5 +34,3 @@ def test_pptx_text(test_path):
     compare = TextSimilarly(baseline_text, subject_text)
     _, score = compare.damerau_levenshtein()
     assert score == 1
-
-
