@@ -123,7 +123,7 @@ class TextSimilarly:
                     rgt = s2_tokens[i].ljust(width)
                     output += f"{lft} | {rgt} | \n"
         else:
-            output = f"{lft}\n{rgt}"
+            output = f"{s1}\n{s2}"
         return output
 
     def write_comparation(self,
