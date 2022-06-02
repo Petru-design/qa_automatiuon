@@ -4,8 +4,7 @@ from openpyxl import load_workbook
 import pytest
 
 from utils.navigation import paths_keeper
-from pyfiles.text_similarity import TextSimilarly
-from utils.comparators import recursive_attribute_compare
+from utils.comparators import recursive_attribute_compare, compare_texts
 
 
 color_attrs = {
@@ -75,9 +74,7 @@ format_attributes = {
 }
 
 
-def generate_cells(workbook_1_path, workbook_2_path):
-    workbook_1 = load_workbook(workbook_1_path)
-    workbook_2 = load_workbook(workbook_2_path)
+def generate_cells(workbook_1, workbook_2):
     for sheet_1, sheet_2 in zip(workbook_1.worksheets, workbook_2.worksheets):
         for column_1, column_2 in zip(sheet_1.columns, sheet_2.columns):
             for cell_1, cell_2 in zip(column_1, column_2):
@@ -90,16 +87,18 @@ def generate_cells(workbook_1_path, workbook_2_path):
     ids=paths_keeper.get_ids("xlsx"),
 )
 def test_xlsx_text(test_path):
-    baseline_path = os.path.join(test_path, "baseline.xlsx")
-    subject_path = os.path.join(test_path, "subject.xlsx")
+    baseline_wb = load_workbook(os.path.join(test_path, "baseline.xlsx"))
+    subject_wb = load_workbook(os.path.join(test_path, "subject.xlsx"))
 
-    for baseline_cell, subject_cell in generate_cells(baseline_path, subject_path):
+    for baseline_cell, subject_cell in generate_cells(baseline_wb, subject_wb):
         if baseline_cell.value == "" or subject_cell.value == "":
             assert baseline_cell.value == subject_cell.value
         else:
-            compare = TextSimilarly(baseline_cell.value, subject_cell.value)
-            _, score = compare.damerau_levenshtein()
-            assert score == 1
+            compare_texts(
+                baseline_cell.value,
+                subject_cell.value,
+                os.path.join(test_path, "text_result.txt"),
+            )
 
 
 @pytest.mark.parametrize(
@@ -108,8 +107,8 @@ def test_xlsx_text(test_path):
     ids=paths_keeper.get_ids("xlsx"),
 )
 def test_xlsx_format(test_path):
-    baseline_path = os.path.join(test_path, "baseline.xlsx")
-    subject_path = os.path.join(test_path, "subject.xlsx")
+    baseline_wb = load_workbook(os.path.join(test_path, "baseline.xlsx"))
+    subject_wb = load_workbook(os.path.join(test_path, "subject.xlsx"))
 
-    for baseline_cell, subject_cell in generate_cells(baseline_path, subject_path):
+    for baseline_cell, subject_cell in generate_cells(baseline_wb, subject_wb):
         recursive_attribute_compare(baseline_cell, subject_cell, format_attributes)

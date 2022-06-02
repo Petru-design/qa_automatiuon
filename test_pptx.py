@@ -4,7 +4,7 @@ from pptx import Presentation
 import pytest
 
 from utils.navigation import paths_keeper
-from pyfiles.text_similarity import TextSimilarly
+from utils.comparators import compare_texts
 
 
 def extract_text(prs):
@@ -20,17 +20,13 @@ def extract_text(prs):
 @pytest.mark.parametrize(
     "test_path",
     paths_keeper.get_paths("pptx"),
-    ids=paths_keeper.get_ids("pptx")
+    ids=paths_keeper.get_ids("pptx"),
 )
 def test_pptx_text(test_path):
-    baseline_path = os.path.join(test_path, "baseline.pptx")
-    baseline_presentation = Presentation(baseline_path)
-    baseline_text = "\n".join(extract_text(baseline_presentation))
-    
-    subject_path = os.path.join(test_path, "subject.pptx")
-    subject_presentation = Presentation(subject_path)
-    subject_text = "\n".join(extract_text(subject_presentation))
-
-    compare = TextSimilarly(baseline_text, subject_text)
-    _, score = compare.damerau_levenshtein()
-    assert score == 1
+    baseline_presentation = Presentation(os.path.join(test_path, "baseline.pptx"))
+    subject_presentation = Presentation(os.path.join(test_path, "subject.pptx"))
+    compare_texts(
+        "\n".join(extract_text(baseline_presentation)),
+        "\n".join(extract_text(subject_presentation)),
+        os.path.join(test_path, "text_result.txt"),
+    )

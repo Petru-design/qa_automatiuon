@@ -3,7 +3,7 @@ import os
 import pytest
 
 from utils.navigation import paths_keeper
-from pyfiles.image_similarity import StructuralSimilarity
+from utils.comparators import compare_images
 
 
 @pytest.mark.parametrize(
@@ -18,11 +18,12 @@ def test_jpg(test_path):
     for baseline_image_path, subject_image_path in zip(
         os.listdir(baseline_path), os.listdir(subject_path)
     ):
-        compare = StructuralSimilarity(
+        compare_images(
             os.path.join(baseline_path, baseline_image_path),
             os.path.join(subject_path, subject_image_path),
+            os.path.join(test_path, "result", subject_image_path.split(".")[0]),
+            "JPG",
         )
-        assert compare.score == 1
 
 
 @pytest.mark.parametrize(
@@ -37,8 +38,9 @@ def test_png(test_path):
     for baseline_image_path, subject_image_path in zip(
         os.listdir(baseline_path), os.listdir(subject_path)
     ):
-        compare = StructuralSimilarity(
+        compare_images(
             os.path.join(baseline_path, baseline_image_path),
             os.path.join(subject_path, subject_image_path),
+            os.path.join(test_path, "result", subject_image_path.split(".")[0]),
+            "PNG",
         )
-        assert compare.score == 1

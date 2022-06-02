@@ -4,8 +4,7 @@ import docx
 import pytest
 
 from utils.navigation import paths_keeper
-from pyfiles.text_similarity import TextSimilarly
-from utils.comparators import recursive_attribute_compare
+from utils.comparators import recursive_attribute_compare, compare_texts
 
 
 font_comparable_fields = {
@@ -114,13 +113,11 @@ run_comparable_fields = {
 def test_text(test_path):
     baseline = docx.Document(os.path.join(test_path, "baseline.docx"))
     subject = docx.Document(os.path.join(test_path, "subject.docx"))
-
-    compare = TextSimilarly(
+    compare_texts(
         "\n".join(paragraph.text for paragraph in baseline.paragraphs),
         "\n".join(paragraph.text for paragraph in subject.paragraphs),
+        os.path.join(test_path, "text_result.txt"),
     )
-    _, score = compare.damerau_levenshtein()
-    assert score == 1
 
 
 @pytest.mark.parametrize(
@@ -141,4 +138,6 @@ def test_format(test_path):
         for baseline_run, subject_run in zip(
             baseline_paragraph.runs, subject_paragraph.runs
         ):
-            recursive_attribute_compare(baseline_run, subject_run, run_comparable_fields)
+            recursive_attribute_compare(
+                baseline_run, subject_run, run_comparable_fields
+            )
