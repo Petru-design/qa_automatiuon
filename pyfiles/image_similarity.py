@@ -13,6 +13,13 @@ class StructuralSimilarity:
         self.__base_image = cv2.imread(base_image)
         self.__image = cv2.imread(image)
 
+        if self.__image is None:
+            raise ValueError(
+                f"Image at '{image}' not found. Please make sure the image exists and path is correct.")
+        if self.__base_image is None:
+            raise ValueError(
+                f"Base Image at '{base_image}' not found. Please make sure the image exists and path is correct.")
+
         self.__diff: np.ndarray = None
         self.__score: float = None
         self.__contours: np.ndarray = None
@@ -161,6 +168,7 @@ class StructuralSimilarity:
 
     def save_images(self,
                     output_dir: str | None = None,
+                    format: str = "PNG",
                     image: bool = False,
                     base_image: bool = False,
                     diff: bool = False,
@@ -173,13 +181,32 @@ class StructuralSimilarity:
         Arguments:
 
         output_dir (optional): bool -> output directory
-        image (optional): bool -> image name
-        base_image (optional): bool -> base image name
-        diff (optional): bool -> diff name
-        mask (optional): bool -> mask name
-        output (optional): bool -> output name
-        labels (default=True): bool -> show labels on output
+        foramt (default="PNG"): str -> output format
+        image (optional): bool -> save original image
+        base_image (optional): bool -> save base image
+        diff (optional): bool -> save absolut diff as image
+        mask (optional): bool -> save mask as image
+        output (optional): bool -> save output (original+mask) as image
+        labels (default=True): bool -> show labels on saved images
         """
+        normalized_format = format.upper().strip()
+
+        formats = {
+            "PNG": ".png",
+            "JPG": ".jpg",
+            "JPEG": ".jpg",
+            "BMP": ".bmp",
+            "TIFF": ".tiff",
+            "TIF": ".tiff",
+            "WEBP": ".webp",
+            "PPM": ".ppm",
+            "PAM": ".pam",
+
+        }
+        if normalized_format not in formats:
+            raise ValueError(
+                f"Invalid format {format}. Valid formats are {list(formats.keys())}")
+
         images = []
         if image:
             images.append(("Image", self.__image))
@@ -192,12 +219,13 @@ class StructuralSimilarity:
         if output:
             images.append(("Output", self.__output))
         for (name, image) in images:
+            name_with_format = name + formats[normalized_format]
             if labels:
                 org = (int(image.shape[0]/2), 50)
                 cv2.putText(img=image, text=name, org=org,
                             fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=1, color=(255, 0, 0), thickness=2)
 
             if output_dir:
-                cv2.imwrite(os.path.join(output_dir, name), image)
+                cv2.imwrite(os.path.join(output_dir, name_with_format), image)
             else:
-                cv2.imwrite(f"{name}.png", image)
+                cv2.imwrite(name_with_format, image)
