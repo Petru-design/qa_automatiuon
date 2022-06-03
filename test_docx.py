@@ -120,15 +120,11 @@ def test_text(test_path):
     )
 
 
-def compare_formatng(ent_1, ent_2, comparable_fields, result_path, error_message):
-    try:
-        recursive_attribute_compare(ent_1, ent_2, comparable_fields)
-    except AssertionError as e:
-        with open(result_path, "w", encoding="utf-8") as result:
-            result.write(
-                "\n".join((ent_1.text, "-" * 60, ent_2.text, "-" * 60, str(e)))
-            )
-        raise Exception(error_message) from e
+def record_result(ent_1, ent_2, result_path, exception):
+    with open(result_path, "w", encoding="utf-8") as result:
+        result.write(
+            "\n".join((ent_1.text, "-" * 60, ent_2.text, "-" * 60, str(exception)))
+        )
 
 
 @pytest.mark.parametrize(
@@ -144,21 +140,32 @@ def test_format(test_path):
     for i, (baseline_paragraph, subject_paragraph) in enumerate(
         zip(baseline.paragraphs, subject.paragraphs)
     ):
-        compare_formatng(
-            baseline_paragraph,
-            subject_paragraph,
-            paragraph_comparable_fields,
-            result_path,
-            f"Different formating in paragraph {i}. See output at {result_path}",
-        )
+        try:
+            recursive_attribute_compare(
+                baseline_paragraph, subject_paragraph, paragraph_comparable_fields
+            )
+        except AssertionError as e:
+            record_result(baseline_paragraph, subject_paragraph, result_path, e)
+            raise Exception(
+                f"Different formating in paragraph {i}. See output at {result_path}"
+            ) from e
+
+        if len(baseline_paragraph.runs) != len(subject_paragraph.runs):
+            exception = Exception(
+                f"Different formating in paragraph {i}. See output at {result_path}"
+            )
+            record_result(baseline_paragraph, subject_paragraph, result_path, exception)
+            raise exception
 
         for j, (baseline_run, subject_run) in enumerate(
             zip(baseline_paragraph.runs, subject_paragraph.runs)
         ):
-            compare_formatng(
-                baseline_run,
-                subject_run,
-                run_comparable_fields,
-                result_path,
-                f"Different formating in run {j}. See output at {result_path}",
-            )
+            try:
+                recursive_attribute_compare(
+                    baseline_run, subject_run, run_comparable_fields
+                )
+            except AssertionError as e:
+                record_result(baseline_run, subject_run, result_path, e)
+                raise Exception(
+                    f"Different formating in run {j}. See output at {result_path}"
+                ) from e
