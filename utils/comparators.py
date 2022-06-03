@@ -17,27 +17,44 @@ def recursive_attribute_compare(
         val_1 = getattr(entity_1, field_name)
         val_2 = getattr(entity_2, field_name)
         if val_1 is None or val_2 is None:
-            assert val_1 == val_2, ".".join(current_path + [field_name]) + f" {val_1} != {val_2}"
+            assert val_1 == val_2, (
+                ".".join(current_path + [field_name]) + f" {val_1} != {val_2}"
+            )
         elif isinstance(field_type, dict):
             current_path.append(field_name)
             recursive_attribute_compare(val_1, val_2, field_type, current_path)
             current_path.pop()
         else:
-            assert val_1 == val_2, ".".join(current_path + [field_name]) + f" {val_1} != {val_2}"
+            assert val_1 == val_2, (
+                ".".join(current_path + [field_name]) + f" {val_1} != {val_2}"
+            )
 
 
-def recursive_container_compare(val_1, val_2):
-    assert isinstance(val_1, type(val_2))
+def recursive_container_compare(val_1, val_2, current_path: list[str] | None = None):
+    if current_path is None:
+        current_path = []
+
+    assert isinstance(val_1, type(val_2)), (
+        ".".join(current_path) + f" type({val_1}) != type({val_2})"
+    )
     if isinstance(val_1, (list, tuple)):
-        assert len(val_1) == len(val_2)
-        for elem_1, elem_2 in zip(val_1, val_2):
-            recursive_container_compare(elem_1, elem_2)
+        assert len(val_1) == len(val_2), (
+            ".".join(current_path) + f" different sizes: {len(val_1)} != {len(val_2)}"
+        )
+        for i, (elem_1, elem_2) in enumerate(zip(val_1, val_2)):
+            current_path.append(f"[{i}]")
+            recursive_container_compare(elem_1, elem_2, current_path)
+            current_path.pop()
     elif isinstance(val_1, dict):
-        assert set(val_1) == set(val_2)
+        assert set(val_1) == set(val_2), (
+            ".".join(current_path) + " different keys in dicts"
+        )
         for key in val_1:
-            recursive_container_compare(val_1[key], val_2[key])
+            current_path.append(key)
+            recursive_container_compare(val_1[key], val_2[key], current_path)
+            current_path.pop()
     elif isinstance(val_1, str):
-        assert val_1 == val_2
+        assert val_1 == val_2, ".".join(current_path) + f" {val_1} != {val_2}"
 
 
 def compare_texts(text_1, text_2, result_path):
