@@ -82,4 +82,4 @@ if __name__ == "__main__":
         )
     retcode = pytest.main(test_args)
     # clean up
-    shutil.rmtree("./data")
+    # shutil.rmtree("./data")
