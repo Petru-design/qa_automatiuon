@@ -18,15 +18,15 @@ def extract_text(prs):
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("pptx"),
     ids=paths_keeper.get_ids("pptx"),
 )
-def test_pptx_text(test_path):
-    baseline_presentation = Presentation(os.path.join(test_path, "baseline.pptx"))
-    subject_presentation = Presentation(os.path.join(test_path, "subject.pptx"))
+def test_pptx_text(baseline_path, subject_path, result_path):
+    baseline_presentation = Presentation(baseline_path)
+    subject_presentation = Presentation(subject_path)
     compare_texts(
         "\n".join(extract_text(baseline_presentation)),
         "\n".join(extract_text(subject_presentation)),
-        os.path.join(test_path, "text_result.txt"),
+        os.path.join(result_path, "text_result.txt"),
     )

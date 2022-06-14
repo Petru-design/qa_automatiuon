@@ -82,13 +82,13 @@ def generate_cells(workbook_1, workbook_2):
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("xlsx"),
     ids=paths_keeper.get_ids("xlsx"),
 )
-def test_xlsx_text(test_path):
-    baseline_wb = load_workbook(os.path.join(test_path, "baseline.xlsx"))
-    subject_wb = load_workbook(os.path.join(test_path, "subject.xlsx"))
+def test_xlsx_text(baseline_path, subject_path, result_path):
+    baseline_wb = load_workbook(baseline_path)
+    subject_wb = load_workbook(subject_path)
 
     for baseline_cell, subject_cell in generate_cells(baseline_wb, subject_wb):
         if baseline_cell.value == "" or subject_cell.value == "":
@@ -97,18 +97,18 @@ def test_xlsx_text(test_path):
             compare_texts(
                 baseline_cell.value,
                 subject_cell.value,
-                os.path.join(test_path, "text_result.txt"),
+                os.path.join(result_path, "text_result.txt"),
             )
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("xlsx"),
     ids=paths_keeper.get_ids("xlsx"),
 )
-def test_xlsx_format(test_path):
-    baseline_wb = load_workbook(os.path.join(test_path, "baseline.xlsx"))
-    subject_wb = load_workbook(os.path.join(test_path, "subject.xlsx"))
+def test_xlsx_format(baseline_path, subject_path, result_path):
+    baseline_wb = load_workbook(baseline_path)
+    subject_wb = load_workbook(subject_path)
 
     for baseline_cell, subject_cell in generate_cells(baseline_wb, subject_wb):
         recursive_attribute_compare(baseline_cell, subject_cell, format_attributes)

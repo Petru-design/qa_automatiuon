@@ -106,17 +106,17 @@ run_comparable_fields = {
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("docx"),
     ids=paths_keeper.get_ids("docx"),
 )
-def test_text(test_path):
-    baseline = docx.Document(os.path.join(test_path, "baseline.docx"))
-    subject = docx.Document(os.path.join(test_path, "subject.docx"))
+def test_text(baseline_path, subject_path, result_path):
+    baseline = docx.Document(baseline_path)
+    subject = docx.Document(subject_path)
     compare_texts(
         "\n".join(paragraph.text for paragraph in baseline.paragraphs),
         "\n".join(paragraph.text for paragraph in subject.paragraphs),
-        os.path.join(test_path, "text_result.txt"),
+        os.path.join(result_path, "text_result.txt"),
     )
 
 
@@ -128,14 +128,14 @@ def record_result(ent_1, ent_2, result_path, exception):
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("docx"),
     ids=paths_keeper.get_ids("docx"),
 )
-def test_format(test_path):
-    baseline = docx.Document(os.path.join(test_path, "baseline.docx"))
-    subject = docx.Document(os.path.join(test_path, "subject.docx"))
-    result_path = os.path.join(test_path, "format_result.txt")
+def test_format(baseline_path, subject_path, result_path):
+    baseline = docx.Document(baseline_path)
+    subject = docx.Document(subject_path)
+    result_path = os.path.join(result_path, "format_result.txt")
 
     for i, (baseline_paragraph, subject_paragraph) in enumerate(
         zip(baseline.paragraphs, subject.paragraphs)

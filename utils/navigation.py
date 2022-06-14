@@ -8,16 +8,25 @@ class PathsKeeper:
             self._config = json.load(config_file)
 
         self._ids: dict[str, list[str]] = {}
-        self._paths: dict[str, list[str]] = {}
-        for section, base_path in self._config.items():
-            self._ids[section] = [os.path.basename(entry) for entry in os.listdir(base_path)]
-            self._paths[section] = [os.path.join(base_path, name) for name in os.listdir(base_path)]
+        self._paths: dict[str, list[tuple]] = {}
+        for values in self._config:
+            self._ids.setdefault(values["expansion"], []).append(values["name"])
+            self._paths.setdefault(values["expansion"], []).append(
+                (
+                    values["base"],
+                    values["subject"],
+                    values["results"],
+                )
+            )
 
-    def get_paths(self, section: str) -> list[str]:
+    def get_paths(self, section: str) -> list:
         return self._paths.get(section, [])
 
     def get_ids(self, section: str) -> list[str]:
         return self._ids.get(section, [])
 
 
-paths_keeper = PathsKeeper()
+_config_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"
+)
+paths_keeper = PathsKeeper(_config_path)

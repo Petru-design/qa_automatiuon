@@ -8,29 +8,29 @@ from utils.comparators import recursive_container_compare, compare_texts
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("pdf"),
     ids=paths_keeper.get_ids("pdf"),
 )
-def test_pdf_text(test_path):
-    baseline_pdf = PyPDF2.PdfFileReader(os.path.join(test_path, "baseline.pdf"))
-    subject_pdf = PyPDF2.PdfFileReader(os.path.join(test_path, "subject.pdf"))
+def test_pdf_text(baseline_path, subject_path, result_path):
+    baseline_pdf = PyPDF2.PdfFileReader(baseline_path)
+    subject_pdf = PyPDF2.PdfFileReader(subject_path)
 
     compare_texts(
         "".join(page.extract_text() for page in baseline_pdf.pages),
         "".join(page.extract_text() for page in subject_pdf.pages),
-        os.path.join(test_path, "text_result.txt"),
+        os.path.join(result_path, "text_result.txt"),
     )
 
 
 @pytest.mark.parametrize(
-    "test_path",
+    "baseline_path,subject_path,result_path",
     paths_keeper.get_paths("pdf"),
     ids=paths_keeper.get_ids("pdf"),
 )
-def test_pdf_format(test_path):
-    baseline_pdf = PyPDF2.PdfFileReader(os.path.join(test_path, "baseline.pdf"))
-    subject_pdf = PyPDF2.PdfFileReader(os.path.join(test_path, "subject.pdf"))
+def test_pdf_format(baseline_path, subject_path, result_path):
+    baseline_pdf = PyPDF2.PdfFileReader(baseline_path)
+    subject_pdf = PyPDF2.PdfFileReader(subject_path)
 
     baseline_format = [page["/Resources"] for page in baseline_pdf.pages]
     subject_format = [page["/Resources"] for page in subject_pdf.pages]
