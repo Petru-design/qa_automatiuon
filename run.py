@@ -12,10 +12,10 @@ test_names = {
         "format": "./test_docx.py::test_format",
     },
     "jpg": {
-        "image": "./test_image.py::test_jpg",
+        "image": "./test_images.py::test_jpg",
     },
     "png": {
-        "image": "./test_image.py::test_png",
+        "image": "./test_images.py::test_png",
     },
     "pdf": {
         "text": "./test_pdf.py::test_pdf_text",
