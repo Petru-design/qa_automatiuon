@@ -1,9 +1,7 @@
 import os
 
 from openpyxl import load_workbook
-import pytest
 
-from utils.navigation import paths_keeper
 from utils.comparators import recursive_attribute_compare, compare_texts
 
 
@@ -81,12 +79,7 @@ def generate_cells(workbook_1, workbook_2):
                 yield (cell_1, cell_2)
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("xlsx"),
-    ids=paths_keeper.get_ids("xlsx"),
-)
-def test_xlsx_text(baseline_path, subject_path, result_path):
+def test_text(baseline_path, subject_path, result_path):
     baseline_wb = load_workbook(baseline_path)
     subject_wb = load_workbook(subject_path)
 
@@ -101,12 +94,7 @@ def test_xlsx_text(baseline_path, subject_path, result_path):
             )
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("xlsx"),
-    ids=paths_keeper.get_ids("xlsx"),
-)
-def test_xlsx_format(baseline_path, subject_path, result_path):
+def test_format(baseline_path, subject_path, result_path):
     baseline_wb = load_workbook(baseline_path)
     subject_wb = load_workbook(subject_path)
 

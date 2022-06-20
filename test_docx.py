@@ -1,9 +1,7 @@
 import os
 
 import docx
-import pytest
 
-from utils.navigation import paths_keeper
 from utils.comparators import recursive_attribute_compare, compare_texts
 
 
@@ -105,11 +103,6 @@ run_comparable_fields = {
 }
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("docx"),
-    ids=paths_keeper.get_ids("docx"),
-)
 def test_text(baseline_path, subject_path, result_path):
     baseline = docx.Document(baseline_path)
     subject = docx.Document(subject_path)
@@ -127,11 +120,6 @@ def record_result(ent_1, ent_2, result_path, exception):
         )
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("docx"),
-    ids=paths_keeper.get_ids("docx"),
-)
 def test_format(baseline_path, subject_path, result_path):
     baseline = docx.Document(baseline_path)
     subject = docx.Document(subject_path)

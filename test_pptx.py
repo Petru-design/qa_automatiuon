@@ -1,9 +1,7 @@
 import os
 
 from pptx import Presentation
-import pytest
 
-from utils.navigation import paths_keeper
 from utils.comparators import compare_texts
 
 
@@ -17,12 +15,8 @@ def extract_text(prs):
                     yield run.text
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("pptx"),
-    ids=paths_keeper.get_ids("pptx"),
-)
-def test_pptx_text(baseline_path, subject_path, result_path):
+
+def test_text(baseline_path, subject_path, result_path):
     baseline_presentation = Presentation(baseline_path)
     subject_presentation = Presentation(subject_path)
     compare_texts(

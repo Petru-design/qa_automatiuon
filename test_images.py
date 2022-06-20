@@ -1,16 +1,8 @@
 import os
 
-import pytest
-
-from utils.navigation import paths_keeper
 from utils.comparators import compare_images
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("jpg"),
-    ids=paths_keeper.get_ids("jpg"),
-)
 def test_jpg(baseline_path, subject_path, result_path):
 
     baseline_images = sorted(
@@ -28,11 +20,6 @@ def test_jpg(baseline_path, subject_path, result_path):
         )
 
 
-@pytest.mark.parametrize(
-    "baseline_path,subject_path,result_path",
-    paths_keeper.get_paths("png"),
-    ids=paths_keeper.get_ids("png"),
-)
 def test_png(baseline_path, subject_path, result_path):
 
     baseline_images = sorted(
