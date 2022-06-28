@@ -1,5 +1,8 @@
 import json
-import os
+
+
+class NoConfigError(Exception):
+    pass
 
 
 class ArgumentError(Exception):
@@ -31,6 +34,7 @@ def pytest_addoption(parser):
     parser.addoption("--scenario_path", action="store")
     parser.addoption("--baseline_path", action="store")
     parser.addoption("--result_path", action="store")
+    parser.addoption("--config_path", action="store", default="./config.json")
 
 
 def pytest_generate_tests(metafunc):
@@ -40,11 +44,12 @@ def pytest_generate_tests(metafunc):
         "baseline_path": metafunc.config.getoption("baseline_path"),
         "result_path": metafunc.config.getoption("result_path"),
     }
+    config_path = metafunc.config.getoption("config_path")
 
     if all(param is None for param in params.values()):
-        config_path = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "config.json"
-        )
+        if not config_path:
+            raise NoConfigError("At least, provide the path to the config file.")
+
         with open(config_path, encoding="utf-8") as config_file:
             config = json.load(config_file)
         paths = {}
