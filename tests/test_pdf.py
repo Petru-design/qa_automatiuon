@@ -5,7 +5,7 @@ import PyPDF2
 from utils.comparators import recursive_container_compare, compare_texts
 
 
-def test_text(baseline_path, subject_path, result_path):
+def test_pdf_text(baseline_path, subject_path, result_path):
     baseline_pdf = PyPDF2.PdfFileReader(baseline_path)
     subject_pdf = PyPDF2.PdfFileReader(subject_path)
 
@@ -16,7 +16,7 @@ def test_text(baseline_path, subject_path, result_path):
     )
 
 
-def test_format(baseline_path, subject_path, result_path):
+def test_pdf_format(baseline_path, subject_path, result_path):
     baseline_pdf = PyPDF2.PdfFileReader(baseline_path)
     subject_pdf = PyPDF2.PdfFileReader(subject_path)
 

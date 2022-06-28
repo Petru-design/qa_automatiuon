@@ -11,20 +11,20 @@ class ArgumentError(Exception):
 
 _expansions = {
     "tests/test_docx.py": {
-        "test_text": "docx",
-        "test_format": "docx",
+        "test_docx_text": "docx",
+        "test_docx_format": "docx",
     },
     "tests/test_images.py": {"test_jpg": "jpg", "test_png": "png"},
     "tests/test_pdf.py": {
-        "test_text": "pdf",
-        "test_format": "pdf",
+        "test_pdf_text": "pdf",
+        "test_pdf_format": "pdf",
     },
     "tests/test_pptx.py": {
-        "test_text": "pptx",
+        "test_pptx_text": "pptx",
     },
     "tests/test_xlsx.py": {
-        "test_text": "xlsx",
-        "test_format": "xlsx",
+        "test_xlsx_text": "xlsx",
+        "test_xlsx_format": "xlsx",
     },
 }
 

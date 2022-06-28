@@ -103,7 +103,7 @@ run_comparable_fields = {
 }
 
 
-def test_text(baseline_path, subject_path, result_path):
+def test_docx_text(baseline_path, subject_path, result_path):
     baseline = docx.Document(baseline_path)
     subject = docx.Document(subject_path)
     compare_texts(
@@ -120,7 +120,7 @@ def record_result(ent_1, ent_2, result_path, exception):
         )
 
 
-def test_format(baseline_path, subject_path, result_path):
+def test_docx_format(baseline_path, subject_path, result_path):
     baseline = docx.Document(baseline_path)
     subject = docx.Document(subject_path)
     result_path = os.path.join(result_path, "format_result.txt")
