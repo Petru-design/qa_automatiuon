@@ -5,3 +5,5 @@
 *data*
 *venv*
 config.json
+dist/*
+stiEF_tests.egg-info/*
