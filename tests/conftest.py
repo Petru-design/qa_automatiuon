@@ -9,23 +9,16 @@ class ArgumentError(Exception):
     pass
 
 
-_expansions = {
-    "tests/test_docx.py": {
-        "test_docx_text": "docx",
-        "test_docx_format": "docx",
-    },
-    "tests/test_images.py": {"test_jpg": "jpg", "test_png": "png"},
-    "tests/test_pdf.py": {
-        "test_pdf_text": "pdf",
-        "test_pdf_format": "pdf",
-    },
-    "tests/test_pptx.py": {
-        "test_pptx_text": "pptx",
-    },
-    "tests/test_xlsx.py": {
-        "test_xlsx_text": "xlsx",
-        "test_xlsx_format": "xlsx",
-    },
+_test_names = {
+    ("tests/test_docx.py", "test_docx_text"): "test_docx_text",
+    ("tests/test_docx.py", "test_docx_format"): "test_docx_format",
+    ("tests/test_images.py", "test_jpg"): "test_jpg",
+    ("tests/test_images.py", "test_png"): "test_png",
+    ("tests/test_pdf.py", "test_pdf_text"): "test_pdf_text",
+    ("tests/test_pdf.py", "test_pdf_format"): "test_pdf_format",
+    ("tests/test_pptx.py", "test_pptx_text"): "test_pptx_text",
+    ("tests/test_xlsx.py", "test_xlsx_text"): "test_xlsx_text",
+    ("tests/test_xlsx.py", "test_xlsx_format"): "test_xlsx_format",
 }
 
 
@@ -55,21 +48,19 @@ def pytest_generate_tests(metafunc):
         paths = {}
         ids = {}
         for values in config:
-            paths.setdefault(values["expansion"], []).append(
+            paths.setdefault(values["test"], []).append(
                 (
                     values["base"],
                     values["subject"],
                     values["results"],
                 )
             )
-            ids.setdefault(values["expansion"], []).append(values["name"])
-        expansion = _expansions[metafunc.definition.parent.name][
-            metafunc.definition.name
-        ]
+            ids.setdefault(values["test"], []).append(values["name"])
+        test_name = _test_names[(metafunc.definition.parent.name, metafunc.definition.name)]
         metafunc.parametrize(
             "baseline_path,subject_path,result_path",
-            paths[expansion],
-            ids=ids[expansion],
+            paths[test_name],
+            ids=ids[test_name],
         )
 
     elif any(param is None for param in params):
@@ -78,6 +69,6 @@ def pytest_generate_tests(metafunc):
     else:
         metafunc.parametrize(
             "baseline_path,subject_path,result_path",
-            [[params["scenario_path"], params["baseline_path"], params["result_path"]]], 
-            ids = [params["scenario_name"]],
+            [[params["scenario_path"], params["baseline_path"], params["result_path"]]],
+            ids=[params["scenario_name"]],
         )
