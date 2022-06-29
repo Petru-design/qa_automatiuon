@@ -2,7 +2,7 @@ import os
 
 import PyPDF2
 
-from utils.comparators import recursive_container_compare, compare_texts
+from stiEF_tests.tests.utils.comparators import recursive_container_compare, compare_texts
 
 
 def test_pdf_text(baseline_path, subject_path, result_path):

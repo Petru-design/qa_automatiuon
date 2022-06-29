@@ -2,7 +2,7 @@ import os
 
 from pptx import Presentation
 
-from utils.comparators import compare_texts
+from stiEF_tests.tests.utils.comparators import compare_texts
 
 
 def extract_text(prs):

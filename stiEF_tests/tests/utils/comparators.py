@@ -1,7 +1,7 @@
 import os
 
-from pyfiles.text_similarity import TextSimilarly
-from pyfiles.image_similarity import StructuralSimilarity
+from stiEF_tests.tests.pyfiles.text_similarity import TextSimilarly
+from stiEF_tests.tests.pyfiles.image_similarity import StructuralSimilarity
 
 
 def recursive_attribute_compare(

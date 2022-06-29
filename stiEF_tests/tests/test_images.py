@@ -1,6 +1,6 @@
 import os
 
-from utils.comparators import compare_images
+from stiEF_tests.tests.utils.comparators import compare_images
 
 
 def test_jpg(baseline_path, subject_path, result_path):

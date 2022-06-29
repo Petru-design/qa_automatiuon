@@ -17,5 +17,6 @@ setup(
         "yargs==0.8.1",
     ],
     packages=['stiEF_tests'],
-    package_data={'stiEF_tests': ['conftest.py', 'tests/*', 'tests/pyfiles/*', 'tests/utils/*']},
+    package_data={'stiEF_tests': ['tests/*', 'tests/pyfiles/*', 'tests/utils/*']},
+    py_modules=['conftest']
 )

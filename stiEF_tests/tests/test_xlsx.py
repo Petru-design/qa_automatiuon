@@ -2,7 +2,7 @@ import os
 
 from openpyxl import load_workbook
 
-from utils.comparators import recursive_attribute_compare, compare_texts
+from stiEF_tests.tests.utils.comparators import recursive_attribute_compare, compare_texts
 
 
 color_attrs = {

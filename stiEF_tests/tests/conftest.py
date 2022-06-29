@@ -10,15 +10,15 @@ class ArgumentError(Exception):
 
 
 _test_names = {
-    ("stiEF_tests/tests/test_docx.py", "test_docx_text"): "test_docx_text",
-    ("stiEF_tests/tests/test_docx.py", "test_docx_format"): "test_docx_format",
-    ("stiEF_tests/tests/test_images.py", "test_jpg"): "test_jpg",
-    ("stiEF_tests/tests/test_images.py", "test_png"): "test_png",
-    ("stiEF_tests/tests/test_pdf.py", "test_pdf_text"): "test_pdf_text",
-    ("stiEF_tests/tests/test_pdf.py", "test_pdf_format"): "test_pdf_format",
-    ("stiEF_tests/tests/test_pptx.py", "test_pptx_text"): "test_pptx_text",
-    ("stiEF_tests/tests/test_xlsx.py", "test_xlsx_text"): "test_xlsx_text",
-    ("stiEF_tests/tests/test_xlsx.py", "test_xlsx_format"): "test_xlsx_format",
+    ("test_docx.py", "test_docx_text"): "test_docx_text",
+    ("test_docx.py", "test_docx_format"): "test_docx_format",
+    ("test_images.py", "test_jpg"): "test_jpg",
+    ("test_images.py", "test_png"): "test_png",
+    ("test_pdf.py", "test_pdf_text"): "test_pdf_text",
+    ("test_pdf.py", "test_pdf_format"): "test_pdf_format",
+    ("test_pptx.py", "test_pptx_text"): "test_pptx_text",
+    ("test_xlsx.py", "test_xlsx_text"): "test_xlsx_text",
+    ("test_xlsx.py", "test_xlsx_format"): "test_xlsx_format",
 }
 
 
@@ -27,7 +27,7 @@ _test_names = {
 #     parser.addoption("--scenario_path", action="store")
 #     parser.addoption("--baseline_path", action="store")
 #     parser.addoption("--result_path", action="store")
-#     parser.addoption("--config_path", action="store", default="../config.json")
+#     parser.addoption("--config_path", action="store", default="config.json")
 
 
 def pytest_generate_tests(metafunc):
