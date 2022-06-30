@@ -40,13 +40,13 @@ QAATool recognizes 9 types of test:
 ## With parameters.
 QAATool may run without any config, in case if all the necessary data is provided with parameters. It's the same data, that is provided with config file:
 
-`--scenario_name` - name of scenario.
+`--name` - name of scenario.
 
-`--scenario_path` - path to test subject
+`--subject` - path to test subject
 
-`--baseline_path` - path to reference image
+`--reference` - path to reference image
 
-`--result_path` - path to location to store results in
+`--results` - path to location to store results in
 
 To run the specific test, user should...well, specify the test, using a standart pytest format. E.g. to test docx format, use `stiEF_tests/tests/test_docx.py::test_docx_format` as an argument. Full list of full test names:
 

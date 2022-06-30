@@ -22,20 +22,12 @@ _test_names = {
 }
 
 
-# def pytest_addoption(parser):
-#     parser.addoption("--scenario_name", action="store")
-#     parser.addoption("--scenario_path", action="store")
-#     parser.addoption("--baseline_path", action="store")
-#     parser.addoption("--result_path", action="store")
-#     parser.addoption("--config_path", action="store", default="config.json")
-
-
 def pytest_generate_tests(metafunc):
     params = {
-        "scenario_name": metafunc.config.getoption("scenario_name"),
-        "scenario_path": metafunc.config.getoption("scenario_path"),
-        "baseline_path": metafunc.config.getoption("baseline_path"),
-        "result_path": metafunc.config.getoption("result_path"),
+        "name": metafunc.config.getoption("name"),
+        "subject": metafunc.config.getoption("subject"),
+        "reference": metafunc.config.getoption("reference"),
+        "results": metafunc.config.getoption("results"),
     }
     config_path = metafunc.config.getoption("config_path")
 
@@ -50,7 +42,7 @@ def pytest_generate_tests(metafunc):
         for values in config:
             paths.setdefault(values["test"], []).append(
                 (
-                    values["base"],
+                    values["reference"],
                     values["subject"],
                     values["results"],
                 )
@@ -58,7 +50,7 @@ def pytest_generate_tests(metafunc):
             ids.setdefault(values["test"], []).append(values["name"])
         test_name = _test_names[(metafunc.definition.parent.name, metafunc.definition.name)]
         metafunc.parametrize(
-            "baseline_path,subject_path,result_path",
+            "reference_path,subject_path,result_path",
             paths[test_name],
             ids=ids[test_name],
         )
@@ -68,7 +60,7 @@ def pytest_generate_tests(metafunc):
 
     else:
         metafunc.parametrize(
-            "baseline_path,subject_path,result_path",
-            [[params["scenario_path"], params["baseline_path"], params["result_path"]]],
-            ids=[params["scenario_name"]],
+            "reference_path,subject_path,result_path",
+            [[params["reference"], params["subject"], params["results"]]],
+            ids=[params["name"]],
         )
