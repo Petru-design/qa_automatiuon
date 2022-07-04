@@ -18,5 +18,6 @@ setup(
     ],
     packages=['stiEF_tests'],
     package_data={'stiEF_tests': ['tests/*', 'tests/pyfiles/*', 'tests/utils/*']},
-    py_modules=['conftest']
+    console=['run_stiEF_test.py']
+    # py_modules=['conftest']
 )

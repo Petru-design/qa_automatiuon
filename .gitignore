@@ -7,3 +7,4 @@
 config.json
 dist/*
 stiEF_tests.egg-info/*
+build/*

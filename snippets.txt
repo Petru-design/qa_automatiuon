@@ -1,0 +1,30 @@
+# Test pytest
+
+pytest --co
+python -m stiEF_tests --config_path confdir/config.json --co
+pytest stiEF_tests/tests/test_docx.py::test_docx_format --name p1 --subject p2 --reference p3 --results p4 --co
+
+# Build module
+
+python -m build
+
+# Install/uninstall module
+
+pip install ..\QAA\dist\stiEF_tests-0.1.tar.gz
+pip uninstall stiEF_tests
+
+# Test module
+
+python -m stiEF_tests --co
+python -m stiEF_tests --config_path confdir/config.json --co
+python -m stiEF_tests --name p1 --subject p2 --reference p3 --results p4 --test test_docx_format --co
+
+# Build exe
+
+pyinstaller .\run_stiEF_test.py --clean --collect-all stiEF_tests --noconfirm
+
+# Test exe
+
+.\dist\run_stiEF_test\run_stiEF_test.exe --co
+.\dist\run_stiEF_test\run_stiEF_test.exe --config_path confdir/config.json --co
+.\dist\run_stiEF_test\run_stiEF_test.exe --name p1 --subject p2 --reference p3 --results p4 --test test_docx_format --co
