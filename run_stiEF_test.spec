@@ -3,7 +3,7 @@ from PyInstaller.utils.hooks import collect_all
 
 datas = []
 binaries = []
-hiddenimports = []
+hiddenimports = ['rapidfuzz']
 tmp_ret = collect_all('stiEF_tests')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
@@ -32,6 +32,7 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
+    Tree('stiEF_tests', prefix='stiEF_tests\\'),
     exclude_binaries=True,
     name='run_stiEF_test',
     debug=False,
@@ -44,6 +45,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    
 )
 coll = COLLECT(
     exe,

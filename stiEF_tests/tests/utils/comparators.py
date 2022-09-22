@@ -1,4 +1,5 @@
 import os
+from xmlrpc.client import FastMarshaller
 
 from stiEF_tests.tests.pyfiles.text_similarity import TextSimilarly
 from stiEF_tests.tests.pyfiles.image_similarity import StructuralSimilarity
@@ -39,7 +40,8 @@ def recursive_container_compare(val_1, val_2, current_path: list[str] | None = N
     )
     if isinstance(val_1, (list, tuple)):
         assert len(val_1) == len(val_2), (
-            ".".join(current_path) + f" different sizes: {len(val_1)} != {len(val_2)}"
+            ".".join(current_path) +
+            f" different sizes: {len(val_1)} != {len(val_2)}"
         )
         for i, (elem_1, elem_2) in enumerate(zip(val_1, val_2)):
             current_path.append(f"[{i}]")
@@ -67,12 +69,13 @@ def compare_texts(text_1, text_2, result_path):
         ), f"Texts are not exactly the same, only for {score}. See output at {result_path}"
 
 
-def compare_images(img_path_1, img_path_2, result_path, ext):
+def compare_images(img_path_1, img_path_2, result_path, ext) -> tuple[bool, str]:
     compare = StructuralSimilarity(img_path_1, img_path_2)
+
     if compare.score != 1:
         if not os.path.exists(result_path):
             os.makedirs(result_path)
         compare.save_images(result_path, ext, True, True, True, True)
-        assert (
-            False
-        ), f"Images are not exactly the same, only for {compare.score}. See output at {result_path}"
+        return (False, f"Images are not exactly the same, only for {compare.score}. See output at {result_path}")
+
+    return (True, "Images are exactly the same")

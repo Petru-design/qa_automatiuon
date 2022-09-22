@@ -29,12 +29,15 @@ def run(argv):
             test_name = argv[i + 1]
         elif not arg == test_name:
             args.append(arg)
-    
+
     HERE = os.path.dirname(__file__)
     if not test_name:
         run_from = HERE
     else:
         test_file, test = _test_names[test_name]
         run_from = os.path.join(HERE, 'tests', test_file) + "::" + test
+
+    x = [run_from] + args[1:]
+    print(" ".join(x))
     errcode = pytest.main([run_from] + args[1:])
     sys.exit(errcode)
