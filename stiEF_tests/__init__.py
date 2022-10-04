@@ -38,6 +38,5 @@ def run(argv):
         run_from = os.path.join(HERE, 'tests', test_file) + "::" + test
 
     x = [run_from] + args[1:]
-    print(" ".join(x))
     errcode = pytest.main([run_from] + args[1:])
     sys.exit(errcode)

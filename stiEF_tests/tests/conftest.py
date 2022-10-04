@@ -28,12 +28,15 @@ def pytest_generate_tests(metafunc):
         "subject": metafunc.config.getoption("subject"),
         "reference": metafunc.config.getoption("reference"),
         "results": metafunc.config.getoption("results"),
+        "prefix": metafunc.config.getoption("prefix"),
+
     }
     config_path = metafunc.config.getoption("config_path")
 
     if all(param is None for param in params.values()):
         if not config_path:
-            raise NoConfigError("At least, provide the path to the config file.")
+            raise NoConfigError(
+                "At least, provide the path to the config file.")
 
         with open(config_path, encoding="utf-8") as config_file:
             config = json.load(config_file)
@@ -45,22 +48,26 @@ def pytest_generate_tests(metafunc):
                     values["reference"],
                     values["subject"],
                     values["results"],
+                    values["prefix"],
                 )
             )
             ids.setdefault(values["test"], []).append(values["name"])
-        test_name = _test_names[(metafunc.definition.parent.name, metafunc.definition.name)]
+        test_name = _test_names[(
+            metafunc.definition.parent.name, metafunc.definition.name)]
         metafunc.parametrize(
-            "reference_path,subject_path,result_path",
+            "reference_path,subject_path,result_path,naming_prefix",
             paths[test_name],
             ids=ids[test_name],
         )
 
     elif any(param is None for param in params):
-        raise ArgumentError(f"Some params are set, while others are not: {params}")
+        raise ArgumentError(
+            f"Some params are set, while others are not: {params}")
 
     else:
         metafunc.parametrize(
-            "reference_path,subject_path,result_path",
-            [[params["reference"], params["subject"], params["results"]]],
+            "reference_path,subject_path,result_path,naming_prefix",
+            [[params["reference"], params["subject"],
+                params["results"], params["prefix"]]],
             ids=[params["name"]],
         )

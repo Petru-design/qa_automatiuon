@@ -20,6 +20,10 @@ class StructuralSimilarity:
             raise ValueError(
                 f"Base Image at '{base_image}' not found. Please make sure the image exists and path is correct.")
 
+        if self.__image.shape != self.__base_image.shape:
+            raise ValueError(
+                f"Images are not the same size. Please make sure the images are the same size.\nBase Image: {self.__base_image.shape}\nImage: {self.__image.shape}.\nBase Image Path: {base_image}\nImage Path: {image}")
+
         self.__diff: np.ndarray = None
         self.__score: float = None
         self.__contours: np.ndarray = None

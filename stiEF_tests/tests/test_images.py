@@ -4,8 +4,7 @@ import os
 from stiEF_tests.tests.utils.comparators import compare_images
 
 
-def test_jpg(reference_path, subject_path, result_path):
-
+def test_jpg(reference_path, subject_path, result_path, naming_prefix):
     baseline_images = sorted(
         path for path in os.listdir(reference_path) if path.endswith(".jpg")
     )
@@ -21,6 +20,7 @@ def test_jpg(reference_path, subject_path, result_path):
             os.path.join(result_path, "result",
                          subject_image_path.split(".")[0]),
             "JPG",
+            naming_prefix,
         )
 
         if not result[0]:
@@ -29,8 +29,7 @@ def test_jpg(reference_path, subject_path, result_path):
     assert not error_list, "Issues detected:\n" + "\n".join(error_list)
 
 
-def test_png(reference_path, subject_path, result_path):
-
+def test_png(reference_path, subject_path, result_path, naming_prefix):
     baseline_images = sorted(
         path for path in os.listdir(reference_path) if path.endswith(".png")
     )
@@ -46,6 +45,7 @@ def test_png(reference_path, subject_path, result_path):
             os.path.join(result_path, "result",
                          subject_image_path.split(".")[0]),
             "PNG",
+            naming_prefix,
         )
 
         if not result[0]:

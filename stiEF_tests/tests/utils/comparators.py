@@ -69,13 +69,18 @@ def compare_texts(text_1, text_2, result_path):
         ), f"Texts are not exactly the same, only for {score}. See output at {result_path}"
 
 
-def compare_images(img_path_1, img_path_2, result_path, ext) -> tuple[bool, str]:
-    compare = StructuralSimilarity(img_path_1, img_path_2)
-
+def compare_images(img_path_1, img_path_2, result_path, ext, naming_prefix) -> tuple[bool, str]:
+    try:
+        compare = StructuralSimilarity(img_path_1, img_path_2)
+    except Exception as e:
+        return (False, str(e))
+    head, tail = os.path.split(result_path)
+    result_path = os.path.join(head, naming_prefix + tail)
     if compare.score != 1:
         if not os.path.exists(result_path):
             os.makedirs(result_path)
-        compare.save_images(result_path, ext, True, True, True, True)
+        compare.save_images(result_path, ext,
+                            True, True, True, True)
         return (False, f"Images are not exactly the same, only for {compare.score}. See output at {result_path}")
 
     return (True, "Images are exactly the same")

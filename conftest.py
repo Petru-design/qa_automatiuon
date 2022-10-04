@@ -5,3 +5,4 @@ def pytest_addoption(parser):
     parser.addoption("--reference", action="store")
     parser.addoption("--results", action="store")
     parser.addoption("--config_path", action="store", default="config.json")
+    parser.addoption("--prefix", action="store")
