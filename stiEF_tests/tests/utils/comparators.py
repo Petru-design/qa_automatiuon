@@ -74,8 +74,9 @@ def compare_images(img_path_1, img_path_2, result_path, ext, naming_prefix) -> t
         compare = StructuralSimilarity(img_path_1, img_path_2)
     except Exception as e:
         return (False, str(e))
-    head, tail = os.path.split(result_path)
-    result_path = os.path.join(head, naming_prefix + tail)
+    if naming_prefix:
+        head, tail = os.path.split(result_path)
+        result_path = os.path.join(head, naming_prefix + tail)
     if compare.score != 1:
         if not os.path.exists(result_path):
             os.makedirs(result_path)

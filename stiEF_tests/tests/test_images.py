@@ -51,4 +51,4 @@ def test_png(reference_path, subject_path, result_path, naming_prefix):
         if not result[0]:
             error_list.append(result[1])
 
-    assert not error_list, "Issues detected:\n" + "\n".join(error_list)
+    assert not error_list, "Issues detected:\n" + "\n\n".join(error_list)
