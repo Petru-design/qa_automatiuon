@@ -1,4 +1,3 @@
-from distutils import errors
 import os
 
 from stiEF_tests.tests.utils.comparators import compare_images
@@ -13,9 +12,14 @@ def test_jpg(reference_path, subject_path, result_path, naming_prefix):
     )
 
     error_list = []
-    for baseline_image_path, subject_image_path in zip(baseline_images, subject_images):
+    for subject_image_path in subject_images:
+        if subject_image_path not in baseline_images:
+            print("skipping ", subject_image_path)
+            error_list.append(
+                f"Image {subject_image_path} not found in baseline")
+            continue
         result = compare_images(
-            os.path.join(reference_path, baseline_image_path),
+            os.path.join(reference_path, subject_image_path),
             os.path.join(subject_path, subject_image_path),
             os.path.join(result_path, "result",
                          subject_image_path.split(".")[0]),
@@ -38,9 +42,14 @@ def test_png(reference_path, subject_path, result_path, naming_prefix):
     )
 
     error_list = []
-    for baseline_image_path, subject_image_path in zip(baseline_images, subject_images):
+    for subject_image_path in subject_images:
+        if subject_image_path not in baseline_images:
+            print("skipping ", subject_image_path)
+            error_list.append(
+                f"Image {subject_image_path} not found in baseline")
+            continue
         result = compare_images(
-            os.path.join(reference_path, baseline_image_path),
+            os.path.join(reference_path, subject_image_path),
             os.path.join(subject_path, subject_image_path),
             os.path.join(result_path, "result",
                          subject_image_path.split(".")[0]),
