@@ -16,7 +16,7 @@ def extract_text(prs):
 
 
 
-def test_pptx_text(reference_path, subject_path, result_path):
+def test_pptx_text(reference_path, subject_path, result_path, naming_prefix):
     baseline_presentation = Presentation(reference_path)
     subject_presentation = Presentation(subject_path)
     compare_texts(
