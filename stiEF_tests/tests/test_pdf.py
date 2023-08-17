@@ -5,7 +5,7 @@ import PyPDF2
 from stiEF_tests.tests.utils.comparators import recursive_container_compare, compare_texts
 
 
-def test_pdf_text(reference_path, subject_path, result_path):
+def test_pdf_text(reference_path, subject_path, result_path, naming_prefix):
     baseline_pdf = PyPDF2.PdfFileReader(reference_path)
     subject_pdf = PyPDF2.PdfFileReader(subject_path)
 
@@ -16,7 +16,7 @@ def test_pdf_text(reference_path, subject_path, result_path):
     )
 
 
-def test_pdf_format(reference_path, subject_path, result_path):
+def test_pdf_format(reference_path, subject_path, result_path, naming_prefix):
     baseline_pdf = PyPDF2.PdfFileReader(reference_path)
     subject_pdf = PyPDF2.PdfFileReader(subject_path)
 

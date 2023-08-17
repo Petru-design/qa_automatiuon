@@ -79,7 +79,7 @@ def generate_cells(workbook_1, workbook_2):
                 yield (cell_1, cell_2)
 
 
-def test_xlsx_text(reference_path, subject_path, result_path):
+def test_xlsx_text(reference_path, subject_path, result_path, naming_prefix):
     baseline_wb = load_workbook(reference_path)
     subject_wb = load_workbook(subject_path)
 
@@ -94,7 +94,7 @@ def test_xlsx_text(reference_path, subject_path, result_path):
             )
 
 
-def test_xlsx_format(reference_path, subject_path, result_path):
+def test_xlsx_format(reference_path, subject_path, result_path, naming_prefix):
     baseline_wb = load_workbook(reference_path)
     subject_wb = load_workbook(subject_path)
 
