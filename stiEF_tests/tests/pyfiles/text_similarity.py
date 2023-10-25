@@ -1,7 +1,7 @@
 import difflib
 import os
 import re
-form sys import platform
+from sys import platform
 from rapidfuzz.string_metric import levenshtein
 
 
@@ -153,7 +153,7 @@ class TextSimilarly:
 
         output, output_lft, output_rgt = self.get_printable_comparation(
             width, margin, sidebyside, compact)
-        
+
         if output_rgt and output_lft:
             left_path = output_path.replace(".txt", "_left.txt")
             right_path = output_path.replace(".txt", "_right.txt")
@@ -163,7 +163,7 @@ class TextSimilarly:
 
             with open(right_path, 'w', encoding="utf-8") as f:
                 f.write(output_rgt)
-                
+
             # check what OS is used
             # and create shell command accordingly
             comand_file_path = ""
@@ -175,7 +175,7 @@ class TextSimilarly:
                                         # try to run VS code comand             
                                         code -d {left_path} {right_path}
                                         """
-                                                           
+
             elif platform == "win32":
                 # Windows
                 comand_file_path = os.path.join(directory, "compare.bat")
@@ -192,7 +192,7 @@ class TextSimilarly:
                                         notepad {left_path}
                                         notepad {right_path}
                                         """
-                                        
+
             elif platform == "darwin":
                 # OS X
                 comand_file_path = os.path.join(directory, "compare.sh")
@@ -200,10 +200,10 @@ class TextSimilarly:
                                 # try to run VS code comand             
                                 code -d {left_path} {right_path}
                                 """
-            
+
             # Write the command to a file
             with open(comand_file_path, 'w', encoding="utf-8") as f:
                 f.write(relevant_command)
-                
+
         with open(output_path, 'w', encoding="utf-8") as f:
             f.write(output)
