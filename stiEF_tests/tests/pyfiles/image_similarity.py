@@ -20,9 +20,9 @@ class StructuralSimilarity:
             raise ValueError(
                 f"Base Image at '{base_image}' not found. Please make sure the image exists and path is correct.")
 
-        if self.__image.shape != self.__base_image.shape:
-            raise ValueError(
-                f"Images are not the same size. Please make sure the images are the same size.\nBase Image: {self.__base_image.shape}\nImage: {self.__image.shape}.\nBase Image Path: {base_image}\nImage Path: {image}")
+        # if self.__image.shape != self.__base_image.shape:
+        #     raise ValueError(
+        #         f"Images are not the same size. Please make sure the images are the same size.\nBase Image: {self.__base_image.shape}\nImage: {self.__image.shape}.\nBase Image Path: {base_image}\nImage Path: {image}")
 
         self.__diff: np.ndarray = None
         self.__score: float = None
@@ -97,8 +97,18 @@ class StructuralSimilarity:
         Resize images to same dimensions
         """
         if self.__image.shape != self.__base_image.shape:
-            self.__image = cv2.resize(
-                self.__image, self.__base_image.shape[:2])
+            # add padding to the __image to make it the same size as the __base_image
+            self.__image = cv2.copyMakeBorder(self.__image,
+                                              0,
+                                              self.__base_image.shape[0] -
+                                              self.__image.shape[0],
+                                              self.__base_image.shape[1] -
+                                              self.__image.shape[1],
+                                              0,
+                                              cv2.BORDER_CONSTANT)
+
+            # self.__image = cv2.resize(
+            #     self.__image, self.__base_image.shape[:2])
 
     @property
     def __structural_similarity(self) -> tuple[float, np.ndarray]:
