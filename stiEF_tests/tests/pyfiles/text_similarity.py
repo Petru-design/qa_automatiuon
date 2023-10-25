@@ -195,7 +195,7 @@ class TextSimilarly:
 
             elif platform == "darwin":
                 # OS X
-                comand_file_path = os.path.join(directory, "compare.sh")
+                comand_file_path = os.path.join(directory, "compare.command")
                 relevant_command = f"""#!/bin/bash
                                 # try to run VS code comand             
                                 code -d {left_path} {right_path}
@@ -204,6 +204,9 @@ class TextSimilarly:
             # Write the command to a file
             with open(comand_file_path, 'w', encoding="utf-8") as f:
                 f.write(relevant_command)
+            if platform == "darwin" or platform == "linux" or platform == "linux2":
+                # make file executable
+                os.system(f"chmod +x {comand_file_path}")
 
         with open(output_path, 'w', encoding="utf-8") as f:
             f.write(output)
