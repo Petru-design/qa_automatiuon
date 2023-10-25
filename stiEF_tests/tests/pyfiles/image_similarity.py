@@ -98,14 +98,27 @@ class StructuralSimilarity:
         """
         if self.__image.shape != self.__base_image.shape:
             # add padding to the __image to make it the same size as the __base_image
+            larger_width = max(
+                self.__image.shape[1], self.__base_image.shape[1])
+            larger_height = max(
+                self.__image.shape[0], self.__base_image.shape[0])
+
             self.__image = cv2.copyMakeBorder(self.__image,
                                               0,
-                                              self.__base_image.shape[0] -
+                                              larger_height -
                                               self.__image.shape[0],
-                                              self.__base_image.shape[1] -
+                                              larger_width -
                                               self.__image.shape[1],
                                               0,
                                               cv2.BORDER_CONSTANT)
+            self.__base_image = cv2.copyMakeBorder(self.__base_image,
+                                                   0,
+                                                   larger_height -
+                                                   self.__base_image.shape[0],
+                                                   larger_width -
+                                                   self.__base_image.shape[1],
+                                                   0,
+                                                   cv2.BORDER_CONSTANT)
 
             # self.__image = cv2.resize(
             #     self.__image, self.__base_image.shape[:2])
