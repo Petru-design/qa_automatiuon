@@ -1,8 +1,7 @@
 import difflib
 import os
 import re
-
-import numpy as np
+form sys import platform
 from rapidfuzz.string_metric import levenshtein
 
 
@@ -107,9 +106,12 @@ class TextSimilarly:
             compact: If True, the comparison is shown compact (without _). """
         s1, s2 = self.__equalize()
         output = ""
+        s1_tokens = self.__split_into_lines(s1, width, margin)
+        s2_tokens = self.__split_into_lines(s2, width, margin)
+
+        output_lft = ""
+        output_rgt = ""
         if sidebyside:
-            s1_tokens = self.__split_into_lines(s1, width, margin)
-            s2_tokens = self.__split_into_lines(s2, width, margin)
             if compact:
                 for i in range(0, len(s1_tokens)):
                     lft = re.sub(
@@ -123,8 +125,14 @@ class TextSimilarly:
                     rgt = s2_tokens[i].ljust(width)
                     output += f"{lft} | {rgt} | \n"
         else:
+            for i in range(0, len(s1_tokens)):
+                lft = s1_tokens[i].ljust(width)
+                rgt = s2_tokens[i].ljust(width)
+                output_lft += f"{lft}\n"
+                output_rgt += f"{rgt}\n"
+
             output = f"{s1}\n{s2}"
-        return output
+        return output, output_lft, output_rgt
 
     def write_comparation(self,
                           output_path: str,
@@ -143,8 +151,59 @@ class TextSimilarly:
             sidebyside: If True, the comparison is shown side by side.
             compact: If True, the comparison is shown compact (without _). """
 
-        output = self.get_printable_comparation(
+        output, output_lft, output_rgt = self.get_printable_comparation(
             width, margin, sidebyside, compact)
+        
+        if output_rgt and output_lft:
+            left_path = output_path.replace(".txt", "_left.txt")
+            right_path = output_path.replace(".txt", "_right.txt")
+            directory = os.path.dirname(output_path)
+            with open(left_path, 'w', encoding="utf-8") as f:
+                f.write(output_lft)
 
+            with open(right_path, 'w', encoding="utf-8") as f:
+                f.write(output_rgt)
+                
+            # check what OS is used
+            # and create shell command accordingly
+            comand_file_path = ""
+            relevant_command = ""
+            if platform == "linux" or platform == "linux2":
+                # linux
+                comand_file_path = os.path.join(directory, "compare.sh")
+                relevant_command = f"""#!/bin/bash
+                                        # try to run VS code comand             
+                                        code -d {left_path} {right_path}
+                                        """
+                                                           
+            elif platform == "win32":
+                # Windows
+                comand_file_path = os.path.join(directory, "compare.bat")
+                relevant_command = f"""@ECHO OFF
+                                        :: try to run VS code comand
+                                        %@Try%
+                                        code -d {left_path} {right_path}
+                                        %@Catch%
+                                        :: if error, run notepad++
+                                        %@try%
+                                        notepad++\plugins\compare-plugin\compare.exe {left_path} {right_path}
+                                        %@Catch%
+                                        :: if error, run notepad
+                                        notepad {left_path}
+                                        notepad {right_path}
+                                        """
+                                        
+            elif platform == "darwin":
+                # OS X
+                comand_file_path = os.path.join(directory, "compare.sh")
+                relevant_command = f"""#!/bin/bash
+                                # try to run VS code comand             
+                                code -d {left_path} {right_path}
+                                """
+            
+            # Write the command to a file
+            with open(comand_file_path, 'w', encoding="utf-8") as f:
+                f.write(relevant_command)
+                
         with open(output_path, 'w', encoding="utf-8") as f:
             f.write(output)
