@@ -91,7 +91,7 @@ class TextSimilarly:
         return result
 
     def get_printable_comparation(self,
-                                  width: int = 40,
+                                  width: int = 100,
                                   margin: int = 10,
                                   sidebyside: bool = True,
                                   compact: bool = False) -> str:
@@ -136,7 +136,7 @@ class TextSimilarly:
 
     def write_comparation(self,
                           output_path: str,
-                          width: int = 40,
+                          width: int = 100,
                           margin: int = 10,
                           sidebyside: bool = True,
                           compact: bool = False) -> None:
