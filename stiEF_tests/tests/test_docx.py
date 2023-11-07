@@ -109,14 +109,15 @@ def test_docx_text(reference_path, subject_path, result_path, naming_prefix):
     compare_texts(
         "\n".join(paragraph.text for paragraph in baseline.paragraphs),
         "\n".join(paragraph.text for paragraph in subject.paragraphs),
-        os.path.join(result_path, "text_result.txt"),
+        os.path.join(result_path, f"{naming_prefix}_text_result.txt"),
     )
 
 
 def record_result(ent_1, ent_2, result_path, exception):
     with open(result_path, "w", encoding="utf-8") as result:
         result.write(
-            "\n".join((ent_1.text, "-" * 60, ent_2.text, "-" * 60, str(exception)))
+            "\n".join((ent_1.text, "-" * 60, ent_2.text,
+                      "-" * 60, str(exception)))
         )
 
 
@@ -133,7 +134,8 @@ def test_docx_format(reference_path, subject_path, result_path, naming_prefix):
                 baseline_paragraph, subject_paragraph, paragraph_comparable_fields
             )
         except AssertionError as e:
-            record_result(baseline_paragraph, subject_paragraph, result_path, e)
+            record_result(baseline_paragraph,
+                          subject_paragraph, result_path, e)
             raise Exception(
                 f"Different formating in paragraph {i}. See output at {result_path}"
             ) from e
@@ -142,7 +144,8 @@ def test_docx_format(reference_path, subject_path, result_path, naming_prefix):
             exception = Exception(
                 f"Different formating in paragraph {i}. See output at {result_path}"
             )
-            record_result(baseline_paragraph, subject_paragraph, result_path, exception)
+            record_result(baseline_paragraph, subject_paragraph,
+                          result_path, exception)
             raise exception
 
         for j, (baseline_run, subject_run) in enumerate(

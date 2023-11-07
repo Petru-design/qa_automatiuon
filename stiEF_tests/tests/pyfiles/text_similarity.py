@@ -157,7 +157,7 @@ class TextSimilarly:
         if output_rgt and output_lft:
             left_path = output_path.replace(".txt", "_left.txt")
             right_path = output_path.replace(".txt", "_right.txt")
-            directory = os.path.dirname(output_path)
+
             with open(left_path, 'w', encoding="utf-8") as f:
                 f.write(output_lft)
 
@@ -170,7 +170,7 @@ class TextSimilarly:
             relevant_command = ""
             if platform == "linux" or platform == "linux2":
                 # linux
-                comand_file_path = os.path.join(directory, "compare.sh")
+                comand_file_path = output_path.replace(".txt", "_Compare.sh")
                 relevant_command = f"""#!/bin/bash
                                         # try to run VS code comand             
                                         code -d {left_path} {right_path}
@@ -178,7 +178,7 @@ class TextSimilarly:
 
             elif platform == "win32":
                 # Windows
-                comand_file_path = os.path.join(directory, "compare.bat")
+                comand_file_path = output_path.replace(".txt", "_Compare.bat")
                 relevant_command = f"""@ECHO OFF
                                         :: try to run VS code comand
                                         %@Try%
@@ -195,7 +195,8 @@ class TextSimilarly:
 
             elif platform == "darwin":
                 # OS X
-                comand_file_path = os.path.join(directory, "compare.command")
+                comand_file_path = output_path.replace(
+                    ".txt", "_Compare.command")
                 relevant_command = f"""#!/bin/bash
                                 # try to run VS code comand             
                                 code -d {left_path} {right_path}
