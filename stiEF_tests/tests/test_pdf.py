@@ -13,6 +13,7 @@ def test_pdf_text(reference_path, subject_path, result_path, naming_prefix):
         "".join(page.extract_text() for page in baseline_pdf.pages),
         "".join(page.extract_text() for page in subject_pdf.pages),
         os.path.join(result_path, "text_result.txt"),
+        naming_prefix=naming_prefix,
     )
 
 

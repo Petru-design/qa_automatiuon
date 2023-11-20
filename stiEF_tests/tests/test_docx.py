@@ -11,7 +11,7 @@ font_comparable_fields = {
     "color": {
         "rgb": type(None),
         "theme_color": type(None),
-        "type": docx.enum.base.EnumValue,
+        "type": int,
     },
     "complex_script": type(None),
     "cs_bold": type(None),
@@ -48,7 +48,7 @@ paragraph_comparable_fields = {
         "keep_with_next": type(None),
         "left_indent": type(None),
         "line_spacing": float,
-        "line_spacing_rule": docx.enum.base.EnumValue,
+        "line_spacing_rule": int,
         "page_break_before": bool,
         "right_indent": type(None),
         "space_after": docx.shared.Twips,
@@ -68,7 +68,7 @@ paragraph_comparable_fields = {
             "keep_with_next": type(None),
             "left_indent": type(None),
             "line_spacing": docx.shared.Twips,
-            "line_spacing_rule": docx.enum.base.EnumValue,
+            "line_spacing_rule": int,
             "page_break_before": bool,
             "right_indent": type(None),
             "space_after": docx.shared.Twips,
@@ -77,7 +77,7 @@ paragraph_comparable_fields = {
         "priority": int,
         "quick_style": bool,
         "style_id": str,
-        "type": docx.enum.base.EnumValue,
+        "type": int,
         "unhide_when_used": bool,
     },
 }
@@ -96,7 +96,7 @@ run_comparable_fields = {
         "priority": int,
         "quick_style": bool,
         "style_id": str,
-        "type": docx.enum.base.EnumValue,
+        "type": int,
         "unhide_when_used": bool,
     },
     "underline": type(None),
@@ -110,6 +110,7 @@ def test_docx_text(reference_path, subject_path, result_path, naming_prefix):
         "\n".join(paragraph.text for paragraph in baseline.paragraphs),
         "\n".join(paragraph.text for paragraph in subject.paragraphs),
         os.path.join(result_path, f"{naming_prefix}_text_result.txt"),
+        naming_prefix=naming_prefix,
     )
 
 
@@ -137,12 +138,14 @@ def test_docx_format(reference_path, subject_path, result_path, naming_prefix):
             record_result(baseline_paragraph,
                           subject_paragraph, result_path, e)
             raise Exception(
-                f"Different formating in paragraph {i}. See output at {result_path}"
+                f"Different formating in paragraph {
+                    i}. See output at {result_path}"
             ) from e
 
         if len(baseline_paragraph.runs) != len(subject_paragraph.runs):
             exception = Exception(
-                f"Different formating in paragraph {i}. See output at {result_path}"
+                f"Different formating in paragraph {
+                    i}. See output at {result_path}"
             )
             record_result(baseline_paragraph, subject_paragraph,
                           result_path, exception)
@@ -158,5 +161,6 @@ def test_docx_format(reference_path, subject_path, result_path, naming_prefix):
             except AssertionError as e:
                 record_result(baseline_run, subject_run, result_path, e)
                 raise Exception(
-                    f"Different formating in run {j}. See output at {result_path}"
+                    f"Different formating in run {
+                        j}. See output at {result_path}"
                 ) from e

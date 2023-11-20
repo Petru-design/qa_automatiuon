@@ -91,6 +91,7 @@ def test_xlsx_text(reference_path, subject_path, result_path, naming_prefix):
                 baseline_cell.value,
                 subject_cell.value,
                 os.path.join(result_path, "text_result.txt"),
+                naming_prefix
             )
 
 
@@ -99,4 +100,5 @@ def test_xlsx_format(reference_path, subject_path, result_path, naming_prefix):
     subject_wb = load_workbook(subject_path)
 
     for baseline_cell, subject_cell in generate_cells(baseline_wb, subject_wb):
-        recursive_attribute_compare(baseline_cell, subject_cell, format_attributes)
+        recursive_attribute_compare(
+            baseline_cell, subject_cell, format_attributes)

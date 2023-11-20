@@ -15,7 +15,6 @@ def extract_text(prs):
                     yield run.text
 
 
-
 def test_pptx_text(reference_path, subject_path, result_path, naming_prefix):
     baseline_presentation = Presentation(reference_path)
     subject_presentation = Presentation(subject_path)
@@ -23,4 +22,5 @@ def test_pptx_text(reference_path, subject_path, result_path, naming_prefix):
         "\n".join(extract_text(baseline_presentation)),
         "\n".join(extract_text(subject_presentation)),
         os.path.join(result_path, "text_result.txt"),
+        naming_prefix=naming_prefix,
     )

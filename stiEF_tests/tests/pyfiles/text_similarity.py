@@ -2,7 +2,7 @@ import difflib
 import os
 import re
 from sys import platform
-from rapidfuzz.string_metric import levenshtein
+from rapidfuzz.distance.Levenshtein import distance as levenshtein
 
 
 class TextSimilarly:
@@ -172,14 +172,14 @@ class TextSimilarly:
                 # linux
                 comand_file_path = output_path.replace(".txt", "_Compare.sh")
                 relevant_command = f"""#!/bin/bash
-                                        # try to run VS code comand             
+                                        # try to run VS code comand
                                         code -d {left_path} {right_path}
                                         """
 
             elif platform == "win32":
                 # Windows
                 comand_file_path = output_path.replace(".txt", "_Compare.bat")
-                relevant_command = f"""@ECHO OFF
+                relevant_command = fr"""@ECHO OFF
                                         :: try to run VS code comand
                                         %@Try%
                                         code -d {left_path} {right_path}
@@ -198,7 +198,7 @@ class TextSimilarly:
                 comand_file_path = output_path.replace(
                     ".txt", "_Compare.command")
                 relevant_command = f"""#!/bin/bash
-                                # try to run VS code comand             
+                                # try to run VS code comand
                                 code -d {left_path} {right_path}
                                 """
 

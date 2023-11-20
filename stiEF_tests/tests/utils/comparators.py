@@ -59,7 +59,7 @@ def recursive_container_compare(val_1, val_2, current_path: list[str] | None = N
         assert val_1 == val_2, ".".join(current_path) + f" {val_1} != {val_2}"
 
 
-def compare_texts(text_1, text_2, result_path):
+def compare_texts(text_1, text_2, result_path, naming_prefix):
     compare = TextSimilarly(text_1, text_2)
     _, score = compare.damerau_levenshtein()
     if score != 1:
