@@ -12,7 +12,7 @@ CLIENTS = {}
 
 async def run_test(websocket, catalog_name, subject_path, reference_path, test_type, output_path):
 
-    cmd = ['python', r'C:\Costum\Work\qa_automation\run_stiEF_test.py',
+    cmd = ['python', os.path.join(os.path.dirname(os.path.abspath(__file__)), r'run_stiEF_test.py'),
            '--name', catalog_name,
            '--subject', subject_path,
            '--reference', reference_path,
