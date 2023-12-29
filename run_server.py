@@ -5,102 +5,198 @@ import json
 import subprocess
 import os
 import webbrowser
+import logging
+from typing import Callable
+from utility import (create_config_file, check_baselines,
+                     kill_all_pythons, read_config_file,
+                     start_serving_frontend, update_config_file)
 
 
+logging.basicConfig(level=logging.INFO)
 CLIENTS = {}
+MESSAGE_MAP: dict[str, Callable] = {}
+__catalogs = [
+    # {
+    #     "name": "Test1",
+    #     "baselines": ["docx", "pdf", "jpg", "png", "xlsx", "pptx", ],
+    # },
+    # {
+    #     "name": "Test2",
+    #     "baselines": ["docx", "pdf", "jpg", "png",  "pptx", ],
+    # },
+    # {
+    #     "name": "Test3",
+    #     "baselines": ["docx", "pdf", "png", "xlsx", "pptx", ],
+    # }
+]
+__paths_config = {}
 
 
-async def run_test(websocket, catalog_name, subject_path, reference_path, test_type, output_path):
-
-    cmd = ['python', os.path.join(os.path.dirname(os.path.abspath(__file__)), r'run_stiEF_test.py'),
-           '--name', catalog_name,
-           '--subject', subject_path,
-           '--reference', reference_path,
-           '--prefix', f'{catalog_name}_',
-           '--test', f"test_{test_type}",
-           '--results', output_path,
-           '--junitxml',  os.path.join(output_path, f'{catalog_name}_{test_type}.xml')]
-    print(cmd)
-
-    try:
-        output = subprocess.check_output(cmd)
-        exit_code = 0
-    except subprocess.CalledProcessError as e:
-        output = e.output
-        exit_code = e.returncode
-    print(output)
-
-    print(exit_code)
+async def send_message(websocket: WebSocketServerProtocol,
+                       action: str,
+                       destination: str, data: dict):
     message = {'origin': 'server',
-               'action': 'test result',
-               'destination': 'frontend',
-               'data': {'exit_code': exit_code,
-                        "catalog_name": catalog_name, }
+               'action': action,
+               'destination': destination,
+               'data': data
                }
     await websocket.send(json.dumps(message))
 
 
+def subscribe_to_message(action: str, message_handler: Callable):
+    MESSAGE_MAP[action] = message_handler
+
+
+def unsubscribe_from_message(action: str):
+    del MESSAGE_MAP[action]
+
+
+async def handle_message(websocket: WebSocketServerProtocol, message: dict):
+    action = message.get('action')
+    handler = MESSAGE_MAP.get(action)
+    if handler:
+        await handler(websocket, message)
+
+
+async def on_mps_catalogs(websocket: WebSocketServerProtocol, message: dict):
+    data = message.get('data')
+    if data:
+        catalogs = data.get('catalogs')
+        # print(catalogs)
+        if catalogs:
+            extensions = ["docx", "pdf", "jpg", "png", "xlsx", "pptx"]
+            for catalog in catalogs:
+                processed_catalog = {
+                    "name": catalog,
+                    "baselines": []
+                }
+                for extension in extensions:
+                    if check_baselines(__paths_config['baselineDirectory'],
+                                       catalog, extension):
+                        processed_catalog['baselines'].append(extension)
+
+                global __catalogs
+                __catalogs.append(processed_catalog)
+
+
+async def on_mps_first_connection(websocket: WebSocketServerProtocol):
+    await send_message(websocket, "get-catalogs", "mps", {})
+    # await send_message(websocket, "get-paths", "mps", {})
+
+
+async def on_frontend_first_connection(websocket: WebSocketServerProtocol):
+    global __catalogs
+    await send_message(websocket, "set-catalogs", "frontend", {
+        'catalogs': __catalogs
+    })
+    global __paths_config
+    await send_message(websocket, "set-paths", "frontend", {
+        'paths': __paths_config
+    })
+
+
+async def on_update_paths(websocket: WebSocketServerProtocol, message: dict):
+    data = message.get('data')
+    if data:
+        paths = data.get('paths')
+        if paths:
+            global __paths_config
+            __paths_config = paths
+            update_config_file(os.path.join(os.path.dirname(
+                __file__), "config.json"), paths)
+
+            await send_message(websocket, "set-paths", "frontend", {
+                'paths': __paths_config
+            })
+
+
+async def hadle_ping(websocket: WebSocketServerProtocol, message: dict):
+    origin = message.get('origin')
+    await send_message(websocket, 'pong', message['origin'], {})
+    CLIENTS.setdefault(origin, websocket)
+
+    if origin == 'frontend':
+        await on_frontend_first_connection(websocket)
+    elif origin == 'mps':
+        await on_mps_first_connection(websocket)
+
+
+async def run_test(websocket, data: dict):
+    test_data = data.get('data')
+    if test_data:
+        catalog_name = test_data.get('catalog_name')
+        subject_path = test_data.get('subject_path')
+        reference_path = test_data.get('reference_path')
+        test_type = test_data.get('test_type')
+        output_path = test_data.get('output_path')
+        cmd = ['python', os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      r'run_stiEF_test.py'),
+               '--name', catalog_name,
+               '--subject', subject_path,
+               '--reference', reference_path,
+               '--prefix', f'{catalog_name}_',
+               '--test', f"test_{test_type}",
+               '--results', output_path,
+               '--junitxml',  os.path.join(output_path,
+                                           f'{catalog_name}_{test_type}.xml')]
+
+        try:
+            output = subprocess.check_output(cmd)
+            exit_code = 0
+        except subprocess.CalledProcessError as e:
+            output = e.output
+            exit_code = e.returncode
+
+        message = {'exit_code': exit_code,
+                   "catalog_name": catalog_name,
+                   "test_type": test_type,
+                   "output": output.decode("utf-8") if output else ""}
+
+        await send_message(websocket, 'test-result', 'frontend', message)
+
+
 async def echo(websocket: WebSocketServerProtocol,):
     async for message in websocket:
+        logging.info(message)
         decoded_message = json.loads(message)
-        print(decoded_message)
+        # print(decoded_message)
 
-        origin = decoded_message.get('origin')
-        action = decoded_message.get('action')
         destination = decoded_message.get('destination')
 
-        if origin == 'frontend':
-            if destination == 'server' and action == 'hello':
-                CLIENTS['frontend'] = websocket
-                response = {'origin': 'server',
-                            'action': 'hello',
-                            'destination': 'frontend',
-                            'data': 'Connected to server'
-                            }
-                await websocket.send(json.dumps(response))
+        if destination != "server":
+            coresponding_socket = CLIENTS.get(destination)
+            if coresponding_socket:
+                await coresponding_socket.send(message)
 
-            elif destination == 'server' and action == 'run test':
-                # {'origin': 'frontend', 'action': 'run test', 'destination': 'MPS', 'data':
-                # {'catalog_name': 'L2-test', 'subject_path': 'C:\\Costum\\Work\\stief\\testoutput\\L2-test/L2-test.docx', 'reference_path': 'C:\\Costum\\Work\\stief\\baseline\\L2-test/L2-test.docx', 'test_type': 'docxText', 'output_path': 'C:\\Costum\\Work\\stief\\results\\'}}
-                print("running test...")
-                data = decoded_message.get('data')
-                await run_test(websocket,
-                               catalog_name=data.get('catalog_name'),
-                               subject_path=data.get('subject_path'),
-                               reference_path=data.get('reference_path'),
-                               test_type=data.get('test_type'),
-                               output_path=data.get('output_path'))
-            elif destination == 'MPS':
-                # forward messages to MPS client
-                mps_client = CLIENTS.get('MPS')
-                if mps_client:
-                    await mps_client.send(message)
-
-        if origin == 'MPS':
-            # handle MPS messages
-            if destination == 'server' and action == 'hello':
-                CLIENTS['MPS'] = websocket
-                response = {'origin': 'server',
-                            'action': 'hello',
-                            'destination': 'MPS',
-                            'data': 'Connected to server'
-                            }
-                await websocket.send(json.dumps(response))
-
-            if destination == 'frontend':
-                # forward messages to frontend client
-                frontend_client = CLIENTS.get('frontend')
-                if frontend_client:
-                    await frontend_client.send(message)
+        else:
+            await handle_message(websocket, decoded_message)
 
 
 async def main():
+    # kill_all_pythons()
+    # start_serving_frontend()
+
+    config_file_path = os.path.join(
+        os.path.dirname(__file__), "config.json")
+
+    if not os.path.exists(config_file_path):
+        create_config_file()
+
+    global __paths_config
+    __paths_config = read_config_file(config_file_path)
+
     url = "http://localhost:8100/"
 
-    webbrowser.open(url, new=0, autoraise=True)
+    MESSAGE_MAP['ping'] = hadle_ping
+    MESSAGE_MAP['run-test'] = run_test
+    MESSAGE_MAP['set-catalogs'] = on_mps_catalogs
+    MESSAGE_MAP['update-paths'] = on_update_paths
+
+    # webbrowser.open(url, new=0, autoraise=True)
     async with serve(echo, "localhost", 8765):
         await asyncio.Future()  # run forever
 
 # asyncio.run(main()) # not needed from jupyter notebook, can just call main()
 # await main()
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
